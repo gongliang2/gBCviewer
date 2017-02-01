@@ -14,9 +14,9 @@ import os, sys
 import csv
 
 
-class tableModle(QtCore.QAbstractTableModel):
+class viewTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
-        super(tableModle, self).__init__()
+        super(viewTableModel, self).__init__()
         self.dataIn = None
         self.__rowNumber = 0
         self.__columnNumber = 0
@@ -71,8 +71,8 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.data2View = None
         
-        self.__myModel = tableModle(self)
-        self.__table = None
+        self.myModel = None
+        self.table = None
         
         self.__formatDic = {'i1':np.int8, 'i2':np.int16, 'i4':np.int32, 'i8':np.int64,
                             'u1':np.uint8, 'u2':np.uint16, 'u4':np.uint32, 'u8':np.uint64,
@@ -111,12 +111,14 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
                     QtWidgets.QMessageBox.warning(self, 'warning', 'Can not get the right format. Please, check the inputed format.')
                     
             if len(self.data2View) > 0:
-                if self.__table:
-                    self.verticalLayout.removeWidget(self.__table)
-                self.__myModel.update(self.data2View, self.cb_diff.isChecked())
-                self.__table = QtWidgets.QTableView(self.centralwidget)
-                self.__table.setModel(self.__myModel)
-                self.verticalLayout.addWidget(self.__table)
+                if self.table:
+                    self.verticalLayout.removeWidget(self.table)
+                if not self.myModel:
+                    self.myModel = viewTableModel(self)
+                self.myModel.update(self.data2View, self.cb_diff.isChecked())
+                self.table = QtWidgets.QTableView(self.centralwidget)
+                self.table.setModel(self.myModel)
+                self.verticalLayout.addWidget(self.table)
                 
             
     
@@ -138,7 +140,7 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         return np.dtype(typeList)
         
     def updateShowDiffState(self):
-        self.__myModel.updateShowDiff(self.cb_diff.isChecked())
+        self.myModel.updateShowDiff(self.cb_diff.isChecked())
                     
                     
 
