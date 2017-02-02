@@ -18,37 +18,37 @@ class viewTableModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
         super(viewTableModel, self).__init__()
         self.dataIn = None
-        self.__rowNumber = 0
-        self.__columnNumber = 0
-        self.__showDiff = False
+        self.rowNumber = 0
+        self.columnNumber = 0
+        self.showDiff = False
     
     def update(self, dataIn, showDiff):
         if len(dataIn) > 0:
             self.dataIn = dataIn
-            self.__showDiff = showDiff
-            self.__rowNumber = len(self.dataIn)
+            self.showDiff = showDiff
+            self.rowNumber = len(self.dataIn)
             if type(self.dataIn) is np.ndarray:     # a binary file with fix line length and fix format
-                self.__columnNumber = len(self.dataIn[0])
+                self.columnNumber = len(self.dataIn[0])
             elif type(self.dataIn) is list:     # a CSV file with variable line length
                 lens = [len(one) for one in self.dataIn]
-                self.__columnNumber = max(lens)
+                self.columnNumber = max(lens)
             else:
-                self.__columnNumber = 0
+                self.columnNumber = 0
                 
     def updateShowDiff(self, showDiff):
-        self.__showDiff = showDiff
+        self.showDiff = showDiff
         
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return self.__rowNumber
+        return self.rowNumber
         
     def columnCount(self, parent=QtCore.QModelIndex()):
-        return self.__columnNumber
+        return self.columnNumber
             
     def data(self, index, role):
         if index.row() < len(self.dataIn) and index.column() < len(self.dataIn[index.row()]):
             if role == QtCore.Qt.DisplayRole:            
                 return str(self.dataIn[index.row()][index.column()])
-            elif self.__showDiff and role == QtCore.Qt.BackgroundColorRole:
+            elif self.showDiff and role == QtCore.Qt.BackgroundColorRole:
                 if index.row() > 0:
                     if (index.column() < len(self.dataIn[index.row()-1]) and (self.dataIn[index.row()][index.column()] != self.dataIn[index.row()-1][index.column()])) \
                     or (index.column() >= len(self.dataIn[index.row()-1]) and self.dataIn[index.row()][index.column()]):
@@ -73,6 +73,7 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.myModel = None
         self.table = None
+        self.syncScrollbar4Compare = None  #this shall be assigned to function in gBCcompare to synchronize the scrollbar of 2 views
         
         self.__formatDic = {'i1':np.int8, 'i2':np.int16, 'i4':np.int32, 'i8':np.int64,
                             'u1':np.uint8, 'u2':np.uint16, 'u4':np.uint32, 'u8':np.uint64,
@@ -119,7 +120,8 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.table = QtWidgets.QTableView(self.centralwidget)
                 self.table.setModel(self.myModel)
                 self.verticalLayout.addWidget(self.table)
-                
+                if self.syncScrollbar4Compare: # and self.syncScrollbar4Compare is callable:
+                    self.syncScrollbar4Compare()
             
     
     def getFormat(self):
