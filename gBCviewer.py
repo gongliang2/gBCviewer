@@ -69,7 +69,7 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         self.le_file.returnPressed.connect(self.tryOpenFile)
         self.cb_diff.clicked.connect(self.updateShowDiffState)
         
-        self.data2View = None
+#        self.data2View = None
         
         self.myModel = None
         self.table = None
@@ -98,25 +98,26 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def openFile(self):
         if self.le_file.text() and os.path.isfile(self.le_file.text()):
+            data2View = []
             filePath = self.le_file.text()
             if self.cb_csv.isChecked():
                 with open(filePath, 'r') as csvfile:
                     csvReader = csv.reader(csvfile, delimiter=self.le_format.text())
                     #self.data2View = [[two.strip() for two in one] for one in csvReader]
-                    self.data2View = [one for one in csvReader]
+                    data2View = [one for one in csvReader]
             else:
                 inType = self.getFormat() #np.dtype([('time', np.uint32), ('value', np.float32)])
                 if inType:
-                    self.data2View = np.fromfile(filePath, dtype=inType)
+                    data2View = np.fromfile(filePath, dtype=inType)
                 else:
                     QtWidgets.QMessageBox.warning(self, 'warning', 'Can not get the right format. Please, check the inputed format.')
                     
-            if len(self.data2View) > 0:
+            if len(data2View) > 0:
                 if self.table:
                     self.verticalLayout.removeWidget(self.table)
                 if not self.myModel:
                     self.myModel = viewTableModel(self)
-                self.myModel.update(self.data2View, self.cb_diff.isChecked())
+                self.myModel.update(data2View, self.cb_diff.isChecked())
                 self.table = QtWidgets.QTableView(self.centralwidget)
                 self.table.setModel(self.myModel)
                 self.verticalLayout.addWidget(self.table)
@@ -143,7 +144,20 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         
     def updateShowDiffState(self):
         self.myModel.updateShowDiff(self.cb_diff.isChecked())
-                    
+        
+    def dragEnterEvent( self, event ):
+            data = event.mimeData()
+            urls = data.urls()
+            if ( urls and urls[0].scheme() == 'file' ):
+                event.acceptProposedAction()
+
+    def dropEvent( self, event ):
+        data = event.mimeData()
+        urls = data.urls()
+        if ( urls and urls[0].scheme() == 'file' ):
+            # for some reason, this doubles up the intro slash
+            filepath = str(urls[0].path())[1:]
+            self.le_file.setText(filepath)                    
                     
 
 

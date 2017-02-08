@@ -12,7 +12,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(783, 46)
+        MainWindow.setAcceptDrops(True)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setAcceptDrops(False)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -38,6 +40,7 @@ class Ui_MainWindow(object):
         self.label_file.setObjectName("label_file")
         self.horizontalLayout.addWidget(self.label_file)
         self.le_file = QtWidgets.QLineEdit(self.centralwidget)
+        self.le_file.setDragEnabled(True)
         self.le_file.setObjectName("le_file")
         self.horizontalLayout.addWidget(self.le_file)
         self.label_filter = QtWidgets.QLabel(self.centralwidget)
