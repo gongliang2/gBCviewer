@@ -84,7 +84,7 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
     
     def tryOpenFile(self):
         if not self.le_format.text():
-            QtWidgets.QMessageBox.information(self, 'info', 'Please input first the file format!', QtWidgets.QMessageBox.Ok)
+            QtWidgets.QMessageBox.information(self, 'info', 'File format is needed!', QtWidgets.QMessageBox.Ok)
         elif not self.le_file.text():
             self.browse_folder()
         else:
@@ -157,7 +157,8 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         if ( urls and urls[0].scheme() == 'file' ):
             # for some reason, this doubles up the intro slash
             filepath = str(urls[0].path())[1:]
-            self.le_file.setText(filepath)                    
+            self.le_file.setText(filepath)
+            self.tryOpenFile()                    
                     
 
 
