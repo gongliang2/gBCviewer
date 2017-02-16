@@ -144,6 +144,8 @@ class gBCviewer(QtWidgets.QMainWindow, Ui_MainWindow):
         
     def updateShowDiffState(self):
         self.myModel.updateShowDiff(self.cb_diff.isChecked())
+        modelIdx = QtCore.QModelIndex()
+        self.table.dataChanged(modelIdx, modelIdx)
         
     def dragEnterEvent( self, event ):
             data = event.mimeData()
