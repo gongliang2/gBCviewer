@@ -2,7 +2,7 @@ gBCviewer is a viewer for CSV file and binary file with repeating data format.
 
 hier is something you may want to know:
 
-1) to run the python script you need numpy, CSV libraries and PyQt ect. Maybe the best way is that you just use the SciPy distributions like Anaconda, PythonXY, or WinPython on Windows. For more information see https://www.scipy.org/install.html. gBCviewer is implemented and tested with Anaconda 4.3.0 on Windows.
+1) to run the python script you need numpy, CSV libraries and PyQt ect. Maybe the best way is that you just use one of the SciPy distributions like Anaconda, PythonXY, or WinPython. Once you have it intalled(WinPython don't need to be intalled.), just run the python script. For more information see https://www.scipy.org/install.html. gBCviewer is implemented and tested with Anaconda 4.3.0 on Windows.
 
 2) to open a binary file you have to:
 * specify the data format like e.g. i2;f4;u4 in the "format" line edit field with:
@@ -25,3 +25,5 @@ hier is something you may want to know:
 4) The file will be opened in a talbeview. If the content of a cell is different from the cell above it in the same column, it is marked with yellow background color.
 
 5) Function to filter is not yet implemented.
+
+6) uncheck "diff" checkbox, if you don't want to see the differences marked with yellow background color.
